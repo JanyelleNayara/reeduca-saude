@@ -10,6 +10,7 @@ class UserService {
                 name,
                 email,
                 password,
+                status: true,
                 created_at: new Date(),
                 updated_at: new Date()
             }
@@ -42,6 +43,20 @@ class UserService {
 
     }
 
+    async toggleUserStatus(id, status){
+        return await prisma.user.update({
+            where: {
+                id: id
+            },
+
+            data: {
+                status: status,
+            }
+        })
+    }
+
+    
+    // deletar o usuário
     async deleteUser(id) {
         return await prisma.user.delete({
             where: {

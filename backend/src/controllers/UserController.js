@@ -1,5 +1,5 @@
 
-import userService from "../services/user.service.js";
+import userService from "../services/UserService.js";
 
 class UserController {
 
@@ -60,14 +60,31 @@ class UserController {
             const { name, email, password } = request.body
 
             const user = await userService.updateUser(id, name, email, password)
-            reply.code(200).send('Usuário alterado')
+            reply.code(200).send({message: 'Usuário alterado', user})
             
         } catch (error) {
             console.error(error)
-            reply.code(500).send({error: ' Usuário não alterado '})
+            reply.code(500).send({error: 'Usuário não alterado '})
             
         }
     }
+
+    async toggleUserStatus(request, reply) {
+        try {
+
+            const { id } = request.params
+            const { status } = request.body
+
+            const user = await userService.toggleUserStatus(id, status)
+
+            reply.code(200).send({message: `Usuário ${status ? "ativado" : "desativado"}`, user})
+
+        } catch (error) {
+            console.error(error)
+            reply.code(500).send({error: 'Usuário não desativado'})
+        }
+    }
+
 
     async deleteUser(request, reply) {
         try {
@@ -76,7 +93,7 @@ class UserController {
 
             const user = await userService.deleteUser(id)
 
-            reply.code(200).send('Usuário deletado')
+            reply.code(200).send({message: 'Usuário deletado', user})
             
         } catch (error) {
             console.error(error)
