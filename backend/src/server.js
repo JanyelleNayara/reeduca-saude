@@ -1,12 +1,12 @@
 import Fastify from 'fastify';
-import userRoutes from './routes/user.routes.js';
+import routes from './routes/routes.js';
 
 
 const fastify = Fastify({
     logger: true
 });
 
-fastify.register(userRoutes);
+fastify.register(routes);
 
 const start = async () => {
     try {

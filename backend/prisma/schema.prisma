@@ -8,13 +8,132 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  name       String
-  email      String   @unique
-  password   String
-  status     Boolean
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  status    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  profile             Profile?
+  meals               Meals[]
+  waterConsumption    WaterConsumption[]
+  intermittentFasting IntermittentFasting[]
+  measurements        Measurements[]
 
   @@map("users")
+}
+
+model Profile {
+  id                   String    @id @default(uuid())
+  weightGoal           Float
+  goalWeightDate       DateTime?
+  caloriesDailyGoal    Float?
+  caloriesDailyDeficit Float?
+  waterDailyGoal       Float?
+  currentWeight        Float?
+  height               Float
+  age                  Int
+  waist                Float?
+  shoulders            Float?
+  arms                 Float?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  @@map("profiles")
+}
+
+model Measurements {
+  id              String   @id @default(uuid())
+  weight          Float
+  waist           Float?
+  shoulders       Float?
+  arms            Float?
+  measurementDate DateTime
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("measurements")
+}
+
+model WaterConsumption {
+  id        String   @id @default(uuid())
+  quantity  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("water_consumptions")
+}
+
+model IntermittentFasting {
+  id        String   @id @default(uuid())
+  status    Boolean  @default(true)
+  startTime DateTime @default(now())
+  endTime   DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("intermittent_fastings")
+}
+
+model Meals {
+  id        String   @id @default(uuid())
+  name      String
+  calories  Float?
+  protein   Float?
+  carbs     Float?
+  fats      Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  foods MealFoods[]
+
+  @@map("meals")
+}
+
+model Food {
+  id              String   @id @default(uuid())
+  name            String
+  calories        Float?
+  measure         Float?
+  measurementUnit String?
+  protein         Float?
+  carbs           Float?
+  fats            Float?
+  brand           String?
+  isDiet          Boolean? @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+
+  meals MealFoods[]
+
+  @@map("foods")
+}
+
+model MealFoods {
+  id        String   @id @default(uuid())
+  mealId    String
+  foodId    String
+  weight    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  meal Meals @relation(fields: [mealId], references: [id])
+  food Food  @relation(fields: [foodId], references: [id])
+
+  @@map("meal_foods")
 }

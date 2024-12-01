@@ -18,6 +18,7 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "prettier": "^3.3.3",
     "prisma": "^5.22.0"
   }
 }
